@@ -1,8 +1,13 @@
-﻿// Learn more about F# at http://fsharp.net
-// See the 'F# Tutorial' project for more help.
+﻿module Program
+
+open Tokenizer
 
 [<EntryPoint>]
 let main argv = 
-    printfn "%A" argv
-    0 // return an integer exit code
+    let input = "(add 8 (subtract 4 2))"
+    printfn "%A" input
 
+    let tokens = tokenizer input
+    printfn "%A" tokens
+
+    0 // return an integer exit code
