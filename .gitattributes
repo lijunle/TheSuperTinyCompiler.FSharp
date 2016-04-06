@@ -1,0 +1,14 @@
+﻿# Auto detect text files and perform LF normalization
+# https://help.github.com/articles/dealing-with-line-endings/
+* text=auto
+
+# Custom for Visual Studio
+*.sln text eol=crlf
+*.csproj text eol=crlf
+*.vbproj text eol=crlf
+*.fsproj text eol=crlf
+*.dbproj text eol=crlf
+*.vcxproj text eol=crlf
+*.vcxitems text eol=crlf
+*.props text eol=crlf
+*.filters text eol=crlf
