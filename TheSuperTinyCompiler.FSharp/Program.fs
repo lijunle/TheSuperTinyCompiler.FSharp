@@ -1,6 +1,7 @@
 ﻿module Program
 
 open Tokenizer
+open Parser
 
 [<EntryPoint>]
 let main argv = 
@@ -9,5 +10,8 @@ let main argv =
 
     let tokens = tokenizer input
     printfn "%A" tokens
+
+    let node = parser tokens
+    printfn "%A" node
 
     0 // return an integer exit code
