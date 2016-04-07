@@ -39,6 +39,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Tokenizer.fs" />
     <Compile Include="Parser.fs" />
+    <Compile Include="Transformer.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\4.0\Framework\v4.0\Microsoft.FSharp.Targets" />

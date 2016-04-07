@@ -2,6 +2,7 @@
 
 open Tokenizer
 open Parser
+open Transformer
 
 [<EntryPoint>]
 let main argv = 
@@ -13,5 +14,8 @@ let main argv =
 
     let node = parser tokens
     printfn "%A" node
+
+    let cnode = transformer node
+    printfn "%A" cnode
 
     0 // return an integer exit code
