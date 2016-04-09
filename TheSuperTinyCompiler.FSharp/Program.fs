@@ -3,6 +3,7 @@
 open Tokenizer
 open Parser
 open Transformer
+open CodeGenerator
 
 [<EntryPoint>]
 let main argv = 
@@ -17,5 +18,8 @@ let main argv =
 
     let cnode = transformer node
     printfn "%A" cnode
+
+    let code = generate cnode
+    printfn "%s" code
 
     0 // return an integer exit code
