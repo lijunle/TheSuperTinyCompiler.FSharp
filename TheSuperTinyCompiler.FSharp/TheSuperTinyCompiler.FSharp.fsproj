@@ -41,6 +41,7 @@
     <Compile Include="Parser.fs" />
     <Compile Include="Transformer.fs" />
     <Compile Include="CodeGenerator.fs" />
+    <Compile Include="Compiler.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\4.0\Framework\v4.0\Microsoft.FSharp.Targets" />
