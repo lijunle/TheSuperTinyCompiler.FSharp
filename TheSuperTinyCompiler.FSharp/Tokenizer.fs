@@ -16,22 +16,22 @@ let (|Prefix|_|) (p:string) (s:string) =
         None
 
 let (|ExtractNumber|_|) (s:string) =
-    let rec ExtractNumber' (n:int) (rest:string) =
+    let rec extractNumber' (n:int) (rest:string) =
         match Int32.TryParse(rest.[0..0]) with
-        | true, v -> ExtractNumber' (n * 10 + v) (rest.[1..])
+        | true, v -> extractNumber' (n * 10 + v) (rest.[1..])
         | false, _ -> (n, rest)
 
-    match ExtractNumber' 0 s with
+    match extractNumber' 0 s with
     | (0, _) -> None
     | (n, rest) -> Some(n, rest)
 
 let (|ExtractName|_|) (s:string) =
-    let rec ExtractName' (v:string) (rest:string) =
+    let rec extractName' (v:string) (rest:string) =
         if Char.IsLetter(rest.[0])
-        then ExtractName' (v + rest.[0].ToString()) (rest.[1..])
+        then extractName' (v + rest.[0].ToString()) (rest.[1..])
         else (v, rest)
 
-    match ExtractName' "" s with
+    match extractName' "" s with
     | ("", _) -> None
     | (v, rest) -> Some(v, rest)
 
