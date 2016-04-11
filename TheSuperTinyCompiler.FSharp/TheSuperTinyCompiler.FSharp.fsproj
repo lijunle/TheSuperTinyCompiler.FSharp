@@ -37,6 +37,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Helper.fs" />
     <Compile Include="Tokenizer.fs" />
     <Compile Include="Parser.fs" />
     <Compile Include="Transformer.fs" />
