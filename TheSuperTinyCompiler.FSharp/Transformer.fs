@@ -25,4 +25,3 @@ let transformer (ast : Node) : CNode =
             wrapCallExpression parent callExpression
 
     traverser None ast
-

@@ -3,7 +3,7 @@
 open Compiler
 
 [<EntryPoint>]
-let main argv = 
+let main argv =
     let input = "(add 8 (subtract 4 2))"
     printfn "%s" input
 
