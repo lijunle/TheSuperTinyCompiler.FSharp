@@ -20,6 +20,48 @@ module Input =
     let first input = input.Value.[input.Index]
     let empty input = input.Index = input.Value.Length
 
+module Parser =
+    let run parser input =
+        let (Parser fn) = parser
+        fn input
+
+    let ret v =
+        let fn input =
+            Success (v, input)
+        Parser fn
+
+    let andThen parser1 parser2 =
+        let fn input1 =
+            let result1 = run parser1 input1
+            match result1 with
+            | Failure e -> Failure e
+            | Success (a, input2) ->
+                let result2 = run parser2 input2
+                match result2 with
+                | Failure e -> Failure e
+                | Success (b, input3) ->
+                    let v = (a, b)
+                    Success (v, input3)
+        Parser fn
+
+    let map f p =
+        let fn input =
+            let result = run p input
+            match result with
+            | Failure e -> Failure e
+            | Success (a, next) -> Success (f a, next)
+        Parser fn
+
+    let apply f p =
+        let (>>) = andThen
+        f >> p
+        |> map (fun (g,q) -> g q)
+
+    let lift2 f p1 p2 =
+        let (<!>) = map
+        let (<*>) = apply
+        f <!> p1 <*> p2
+
 let parseChar c =
     let fn input =
         if Input.empty input then
@@ -31,3 +73,29 @@ let parseChar c =
             let message = sprintf "Expect %c, actual %c" c (Input.first input)
             Failure message
     Parser fn
+
+let parseString (s : string) =
+    let cons head tail = head :: tail
+    let consP = Parser.lift2 cons
+
+    let rec sequence list =
+        match list with
+        | [] -> Parser.ret []
+        | head :: tail -> consP head (sequence tail)
+
+    let charListToString chars =
+        System.String(List.toArray chars)
+
+    s
+    |> List.ofSeq
+    |> List.map parseChar
+    |> sequence
+    |> Parser.map charListToString
+
+let test p s =
+    let input = Input.init s
+    let parser = parseString p
+    let result = Parser.run parser input
+    match result with
+    | Failure e -> printfn "%s" e
+    | Success (v, next) -> printfn "Got %s, next index %A" v next.Index
