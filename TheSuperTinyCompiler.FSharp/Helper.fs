@@ -57,6 +57,15 @@ module Parser =
         f >> p
         |> map (fun (g,q) -> g q)
 
+    let sequenceList list =
+        let (<*>) = apply
+        let cons head tail = head :: tail
+
+        let initialValue = ret []
+        let folder element result = (ret cons) <*> element <*> result
+
+        List.foldBack folder list initialValue
+
 let parseChar c =
     let fn input =
         if Input.empty input then
@@ -70,21 +79,13 @@ let parseChar c =
     Parser fn
 
 let parseString (s : string) =
-    let cons head tail = head :: tail
-    let (<*>) = Parser.apply
-
-    let rec sequence list =
-        match list with
-        | [] -> Parser.ret []
-        | head :: tail -> (Parser.ret cons) <*> head <*> (sequence tail)
-
     let charListToString chars =
         System.String(List.toArray chars)
 
     s
     |> List.ofSeq
     |> List.map parseChar
-    |> sequence
+    |> Parser.sequenceList
     |> Parser.map charListToString
 
 let test p s =
