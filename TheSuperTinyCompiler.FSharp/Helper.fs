@@ -96,15 +96,39 @@ let parseString (s : string) =
     |> Parser.sequenceList
     |> Parser.map charListToString
 
-let parseDigitChar =
-    ['0'..'9']
+let anyOf charList =
+    charList
     |> List.map parseChar
     |> List.reduce Parser.orElse
 
+let many p =
+    let rec loop ret input =
+        let result = Parser.run p input
+        match result with
+        | Failure e -> (ret, input)
+        | Success (v, next) ->
+            loop (v :: ret) next
+    let fn input =
+        let (ret, next) = loop [] input
+        Success (List.rev ret, next)
+    Parser fn
+
+let parseInteger =
+    let (>>) = Parser.andThen
+    let firstDigit = anyOf ['1'..'9']
+    let digits = anyOf ['0'..'9']
+    let digitsToInteger digits =
+        digits |> List.toArray |> System.String |> int
+
+    // Only support positive integer now.
+    firstDigit >> many digits
+    |> Parser.map List.Cons
+    |> Parser.map digitsToInteger
+
 let test p s =
     let input = Input.init s
-    let parser = parseDigitChar
+    let parser = parseInteger
     let result = Parser.run parser input
     match result with
     | Failure e -> printfn "%s" e
-    | Success (v, next) -> printfn "Got %c, next index %A" v next.Index
+    | Success (v, next) -> printfn "Got %d, next index %A" v next.Index
