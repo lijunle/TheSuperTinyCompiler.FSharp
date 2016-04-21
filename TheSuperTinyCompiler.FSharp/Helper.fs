@@ -57,11 +57,6 @@ module Parser =
         f >> p
         |> map (fun (g,q) -> g q)
 
-    let lift2 f p1 p2 =
-        let (<!>) = map
-        let (<*>) = apply
-        f <!> p1 <*> p2
-
 let parseChar c =
     let fn input =
         if Input.empty input then
@@ -76,12 +71,12 @@ let parseChar c =
 
 let parseString (s : string) =
     let cons head tail = head :: tail
-    let consP = Parser.lift2 cons
+    let (<*>) = Parser.apply
 
     let rec sequence list =
         match list with
         | [] -> Parser.ret []
-        | head :: tail -> consP head (sequence tail)
+        | head :: tail -> (Parser.ret cons) <*> head <*> (sequence tail)
 
     let charListToString chars =
         System.String(List.toArray chars)
