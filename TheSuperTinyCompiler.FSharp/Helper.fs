@@ -44,6 +44,14 @@ module Parser =
                     Success (v, input3)
         Parser fn
 
+    let orElse parser1 parser2 =
+        let fn input =
+            let result1 = run parser1 input
+            match result1 with
+            | Success v -> Success v
+            | Failure e -> run parser2 input
+        Parser fn
+
     let map f p =
         let fn input =
             let result = run p input
@@ -88,10 +96,15 @@ let parseString (s : string) =
     |> Parser.sequenceList
     |> Parser.map charListToString
 
+let parseDigitChar =
+    ['0'..'9']
+    |> List.map parseChar
+    |> List.reduce Parser.orElse
+
 let test p s =
     let input = Input.init s
-    let parser = parseString p
+    let parser = parseDigitChar
     let result = Parser.run parser input
     match result with
     | Failure e -> printfn "%s" e
-    | Success (v, next) -> printfn "Got %s, next index %A" v next.Index
+    | Success (v, next) -> printfn "Got %c, next index %A" v next.Index
