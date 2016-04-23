@@ -1,5 +1,10 @@
 module Helper
 
+let (.>>.) = Parser2.(.>>.)
+let (|>>) = Parser2.(|>>)
+let (>>.) = Parser2.(>>.)
+let (.>>) = Parser2.(.>>)
+
 let parseChar c =
     let equal first =
         c = first
@@ -15,7 +20,7 @@ let parseString (s : string) =
     |> List.ofSeq
     |> List.map parseChar
     |> Parser2.sequenceList
-    |> Parser2.map charListToString
+    |>> charListToString
 
 let anyOf charList =
     charList
@@ -23,16 +28,15 @@ let anyOf charList =
     |> List.reduce Parser2.orElse
 
 let parseInteger =
-    let (>>) = Parser2.andThen
     let firstDigit = anyOf ['1'..'9']
     let digits = anyOf ['0'..'9']
     let digitsToInteger digits =
         digits |> List.toArray |> System.String |> int
 
     // Only support positive integer now.
-    firstDigit >> Parser2.many digits
-    |> Parser2.map List.Cons
-    |> Parser2.map digitsToInteger
+    firstDigit .>>. Parser2.many digits
+    |>> List.Cons
+    |>> digitsToInteger
 
 let parseSpace =
     let message first =
@@ -42,10 +46,13 @@ let parseSpace =
 let parseSpaces =
     Parser2.many parseSpace
 
-let test p s =
+let test s =
     let input = Input.init s
-    let parser = Parser2.between (parseChar '(') parseInteger (parseChar ')')
+    let leftParen = parseChar '('
+    let rightParen = parseChar ')'
+    let integerPair = parseInteger .>> parseSpaces .>>. parseInteger
+    let parser = Parser2.between leftParen integerPair rightParen
     let result = Parser2.run parser input
     match result with
     | Failure e -> printfn "%s" e
-    | Success (v, next) -> printfn "Got %d, next index %A" v next.Index
+    | Success (v, next) -> printfn "Got %A, next index %A" v next.Index
