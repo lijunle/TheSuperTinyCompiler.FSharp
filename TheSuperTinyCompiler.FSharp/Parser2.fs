@@ -99,5 +99,5 @@ let satisfy predict message =
                 let next = Input.next input
                 Success (first, next)
             else
-                Failure (message first)
+                Failure (sprintf "[%d] %s" input.Index (message first))
     Parser fn

@@ -1,6 +1,7 @@
 module Helper
 
 let (.>>.) = Parser2.(.>>.)
+let (<|>) = Parser2.orElse
 let (|>>) = Parser2.(|>>)
 let (>>.) = Parser2.(>>.)
 let (.>>) = Parser2.(.>>)
@@ -55,13 +56,27 @@ let name =
     Parser2.many (anyOf ['a'..'z'])
     |>> charListToString
 
+let value' =
+    let p = Parser2.fail "Not implemented"
+    let ref = ref p
+    let fn input = Parser2.run !ref input // forward reference
+    (Parser fn, ref)
+
+let (value, valueRef) = value'
+
 let call =
-    leftParen >>. name .>>. Parser2.many (spaces >>. integer) .>> rightParen
+    leftParen >>. name .>>. Parser2.many (spaces >>. value) .>> rightParen
     |>> Node.CallExpression
+
+valueRef :=
+    call <|> integer
+
+let program =
+    Parser2.many value
 
 let test s =
     let input = Input.init s
-    let result = Parser2.run call input
+    let result = Parser2.run program input
     match result with
     | Failure e -> printfn "%s" e
     | Success (v, next) -> printfn "Got %A, next index %A" v next.Index
