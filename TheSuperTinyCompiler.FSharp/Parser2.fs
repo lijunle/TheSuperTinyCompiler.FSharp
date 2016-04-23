@@ -9,6 +9,16 @@ let ret v =
         Success (v, input)
     Parser fn
 
+let map f p =
+    let fn input =
+        let result = run p input
+        match result with
+        | Failure e -> Failure e
+        | Success (a, next) -> Success (f a, next)
+    Parser fn
+
+let (|>>) p f = map f p
+
 let andThen parser1 parser2 =
     let fn input1 =
         let result1 = run parser1 input1
@@ -23,6 +33,20 @@ let andThen parser1 parser2 =
                 Success (v, input3)
     Parser fn
 
+let (.>>.) = andThen
+
+let ignoreLeft p1 p2 =
+    p1 .>>. p2
+    |>> (fun (v1, v2) -> v2)
+
+let (>>.) = ignoreLeft
+
+let ignoreRight p1 p2 =
+    p1 .>>. p2
+    |>> (fun (v1, v2) -> v1)
+
+let (.>>) = ignoreRight
+
 let orElse parser1 parser2 =
     let fn input =
         let result1 = run parser1 input
@@ -31,18 +55,10 @@ let orElse parser1 parser2 =
         | Failure e -> run parser2 input
     Parser fn
 
-let map f p =
-    let fn input =
-        let result = run p input
-        match result with
-        | Failure e -> Failure e
-        | Success (a, next) -> Success (f a, next)
-    Parser fn
-
 let apply f p =
     let (>>) = andThen
     f >> p
-    |> map (fun (g,q) -> g q)
+    |>> (fun (g,q) -> g q)
 
 let sequenceList list =
     let (<*>) = apply
@@ -54,13 +70,7 @@ let sequenceList list =
     List.foldBack folder list initialValue
 
 let between p1 p2 p3 =
-    let (>>=) result f = Result.bind f result
-    let fn input1 =
-        run p1 input1 >>= (fun (_, input2) ->
-        run p2 input2 >>= (fun (v, input3) ->
-        run p3 input3 >>= (fun (_, input4) ->
-        Success (v, input4))))
-    Parser fn
+    p1 >>. p2 .>> p3
 
 let many p =
     let rec loop ret input =
