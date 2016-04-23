@@ -1,10 +1,7 @@
-module Helper
+﻿module StandardParser
 
 let (.>>.) = Parser2.(.>>.)
-let (<|>) = Parser2.orElse
 let (|>>) = Parser2.(|>>)
-let (>>.) = Parser2.(>>.)
-let (.>>) = Parser2.(.>>)
 
 let char c =
     let equal first =
@@ -46,37 +43,3 @@ let integer =
     firstDigit .>>. Parser2.many digits
     |>> List.Cons
     |>> digitsToInteger
-    |>> Node.NumberLiteral
-
-let leftParen = char '('
-
-let rightParen = char ')'
-
-let name =
-    Parser2.many (anyOf ['a'..'z'])
-    |>> charListToString
-
-let value' =
-    let p = Parser2.fail "Not implemented"
-    let ref = ref p
-    let fn input = Parser2.run !ref input // forward reference
-    (Parser fn, ref)
-
-let (value, valueRef) = value'
-
-let call =
-    leftParen >>. name .>>. Parser2.many (spaces >>. value) .>> rightParen
-    |>> Node.CallExpression
-
-valueRef :=
-    call <|> integer
-
-let program =
-    Parser2.many value
-
-let test s =
-    let input = Input.init s
-    let result = Parser2.run program input
-    match result with
-    | Failure e -> printfn "%s" e
-    | Success (v, next) -> printfn "Got %A, next index %A" v next.Index
