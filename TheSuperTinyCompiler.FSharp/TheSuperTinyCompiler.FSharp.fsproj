@@ -43,8 +43,6 @@
     <Compile Include="Parser2.fs" />
     <Compile Include="StandardParser.fs" />
     <Compile Include="SimpleParser.fs" />
-    <Compile Include="Tokenizer.fs" />
-    <Compile Include="Parser.fs" />
     <Compile Include="Transformer.fs" />
     <Compile Include="CodeGenerator.fs" />
     <Compile Include="Compiler.fs" />

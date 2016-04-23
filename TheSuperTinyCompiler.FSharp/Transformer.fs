@@ -1,14 +1,5 @@
 ﻿module Transformer
 
-open Parser
-
-type CNode =
-    | Program of body : CNode list
-    | ExpressionStatement of expression : CNode
-    | CallExpression of callee : CNode * args : CNode list
-    | Identifier of name : string
-    | NumberLiteral of value : int
-
 let transformer (ast : Node) : CNode =
     let wrapCallExpression parent callExpression =
         match parent with

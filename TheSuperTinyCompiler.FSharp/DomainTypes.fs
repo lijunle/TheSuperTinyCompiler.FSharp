@@ -17,3 +17,10 @@ type Node =
     | Program of Node list
     | CallExpression of string * Node list
     | NumberLiteral of int
+
+type CNode =
+    | Program of body : CNode list
+    | ExpressionStatement of expression : CNode
+    | CallExpression of callee : CNode * args : CNode list
+    | Identifier of name : string
+    | NumberLiteral of value : int

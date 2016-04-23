@@ -1,7 +1,5 @@
 ﻿module CodeGenerator
 
-open Transformer
-
 let rec traverse ast =
     let traverseThenConcat sep list =
         list |> List.map traverse |> String.concat sep
