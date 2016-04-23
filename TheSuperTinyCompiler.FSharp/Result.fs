@@ -9,3 +9,9 @@ let bind f r =
     | Success v -> f v
 
 let (>>=) r f = bind f r
+
+type Builder() =
+    member this.Bind (r, f) = bind f r
+    member this.Return x = ret x
+
+let result = new Builder()
