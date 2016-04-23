@@ -1,27 +1,27 @@
 ﻿module StandardParser
 
-let (.>>.) = Parser2.(.>>.)
-let (|>>) = Parser2.(|>>)
+let (.>>.) = Parser.(.>>.)
+let (|>>) = Parser.(|>>)
 
 let char c =
     let equal first =
         c = first
     let message first =
         sprintf "Expect %c, actual %c" c first
-    Parser2.satisfy equal message
+    Parser.satisfy equal message
 
 let anyOf charList =
     charList
     |> List.map char
-    |> List.reduce Parser2.orElse
+    |> List.reduce Parser.orElse
 
 let space =
     let message first =
         sprintf "Expect space, actual %c" first
-    Parser2.satisfy System.Char.IsWhiteSpace message
+    Parser.satisfy System.Char.IsWhiteSpace message
 
 let spaces =
-    Parser2.many space
+    Parser.many space
 
 let charListToString chars =
     System.String(List.toArray chars)
@@ -30,7 +30,7 @@ let string (s : string) =
     s
     |> List.ofSeq
     |> List.map char
-    |> Parser2.sequenceList
+    |> Parser.sequenceList
     |>> charListToString
 
 let integer =
@@ -40,6 +40,6 @@ let integer =
         digits |> List.toArray |> System.String |> int
 
     // Only support positive integer now.
-    firstDigit .>>. Parser2.many digits
+    firstDigit .>>. Parser.many digits
     |>> List.Cons
     |>> digitsToInteger

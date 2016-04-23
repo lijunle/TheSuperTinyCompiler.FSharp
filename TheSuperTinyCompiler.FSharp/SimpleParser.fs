@@ -1,10 +1,10 @@
 module SimpleParser
 
-let (.>>.) = Parser2.(.>>.)
-let (<|>) = Parser2.orElse
-let (|>>) = Parser2.(|>>)
-let (>>.) = Parser2.(>>.)
-let (.>>) = Parser2.(.>>)
+let (.>>.) = Parser.(.>>.)
+let (<|>) = Parser.orElse
+let (|>>) = Parser.(|>>)
+let (>>.) = Parser.(>>.)
+let (.>>) = Parser.(.>>)
 
 let integer =
     StandardParser.integer
@@ -15,13 +15,13 @@ let leftParen = StandardParser.char '('
 let rightParen = StandardParser.char ')'
 
 let name =
-    Parser2.many (StandardParser.anyOf ['a'..'z'])
+    Parser.many (StandardParser.anyOf ['a'..'z'])
     |>> StandardParser.charListToString
 
 let value' =
-    let p = Parser2.fail "Not implemented"
+    let p = Parser.fail "Not implemented"
     let ref = ref p
-    let fn input = Parser2.run !ref input // forward reference
+    let fn input = Parser.run !ref input // forward reference
     (Parser fn, ref)
 
 let (value, valueRef) = value'
@@ -29,19 +29,19 @@ let (value, valueRef) = value'
 let spaces = StandardParser.spaces
 
 let call =
-    leftParen >>. name .>>. Parser2.many (spaces >>. value) .>> rightParen
+    leftParen >>. name .>>. Parser.many (spaces >>. value) .>> rightParen
     |>> Node.CallExpression
 
 valueRef :=
     call <|> integer
 
 let program =
-    Parser2.many value
+    Parser.many value
     |>> Node.Program
 
 let parse s =
     let input = Input.init s
-    let result = Parser2.run program input
+    let result = Parser.run program input
     match result with
     | Failure e -> Failure e
     | Success (v, next) -> Success v

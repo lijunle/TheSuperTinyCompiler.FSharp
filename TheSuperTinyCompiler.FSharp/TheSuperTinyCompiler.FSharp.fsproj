@@ -40,7 +40,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="DomainTypes.fs" />
     <Compile Include="Input.fs" />
-    <Compile Include="Parser2.fs" />
+    <Compile Include="Parser.fs" />
     <Compile Include="StandardParser.fs" />
     <Compile Include="SimpleParser.fs" />
     <Compile Include="Transformer.fs" />

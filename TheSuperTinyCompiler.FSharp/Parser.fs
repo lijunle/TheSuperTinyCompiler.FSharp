@@ -1,4 +1,4 @@
-﻿module Parser2
+﻿module Parser
 
 let run parser input =
     let (Parser fn) = parser
