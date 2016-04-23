@@ -1,16 +1,11 @@
 module Helper
 
 let parseChar c =
-    let fn input =
-        if Input.empty input then
-            Failure "No more input"
-        elif c = Input.first input then
-            let next = Input.next input
-            Success (c, next)
-        else
-            let message = sprintf "Expect %c, actual %c" c (Input.first input)
-            Failure message
-    Parser fn
+    let equal first =
+        c = first
+    let message first =
+        sprintf "Expect %c, actual %c" c first
+    Parser2.satisfy equal message
 
 let parseString (s : string) =
     let charListToString chars =
@@ -38,6 +33,14 @@ let parseInteger =
     firstDigit >> Parser2.many digits
     |> Parser2.map List.Cons
     |> Parser2.map digitsToInteger
+
+let parseSpace =
+    let message first =
+        sprintf "Expect space, actual %c" first
+    Parser2.satisfy System.Char.IsWhiteSpace message
+
+let parseSpaces =
+    Parser2.many parseSpace
 
 let test p s =
     let input = Input.init s

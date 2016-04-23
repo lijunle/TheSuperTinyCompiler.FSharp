@@ -73,3 +73,16 @@ let many p =
         let (ret, next) = loop [] input
         Success (List.rev ret, next)
     Parser fn
+
+let satisfy predict message =
+    let fn input =
+        if Input.empty input then
+            Failure "No more input"
+        else
+            let first = Input.first input
+            if predict first then
+                let next = Input.next input
+                Success (first, next)
+            else
+                Failure (message first)
+    Parser fn
