@@ -17,10 +17,18 @@ let anyOf charList =
     |> List.map char
     |> List.reduce Parser2.orElse
 
-let string (s : string) =
-    let charListToString chars =
-        System.String(List.toArray chars)
+let space =
+    let message first =
+        sprintf "Expect space, actual %c" first
+    Parser2.satisfy System.Char.IsWhiteSpace message
 
+let spaces =
+    Parser2.many space
+
+let charListToString chars =
+    System.String(List.toArray chars)
+
+let string (s : string) =
     s
     |> List.ofSeq
     |> List.map char
@@ -37,26 +45,23 @@ let integer =
     firstDigit .>>. Parser2.many digits
     |>> List.Cons
     |>> digitsToInteger
-
-let space =
-    let message first =
-        sprintf "Expect space, actual %c" first
-    Parser2.satisfy System.Char.IsWhiteSpace message
-
-let spaces =
-    Parser2.many space
+    |>> Node.NumberLiteral
 
 let leftParen = char '('
 
 let rightParen = char ')'
 
-let integerPair = integer .>> spaces .>>. integer
+let name =
+    Parser2.many (anyOf ['a'..'z'])
+    |>> charListToString
 
-let wrappedPair = Parser2.between leftParen integerPair rightParen
+let call =
+    leftParen >>. name .>>. Parser2.many (spaces >>. integer) .>> rightParen
+    |>> Node.CallExpression
 
 let test s =
     let input = Input.init s
-    let result = Parser2.run wrappedPair input
+    let result = Parser2.run call input
     match result with
     | Failure e -> printfn "%s" e
     | Success (v, next) -> printfn "Got %A, next index %A" v next.Index

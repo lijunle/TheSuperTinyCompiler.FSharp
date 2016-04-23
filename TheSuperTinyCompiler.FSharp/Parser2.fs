@@ -9,6 +9,11 @@ let ret v =
         Success (v, input)
     Parser fn
 
+let fail e =
+    let fn input =
+        Failure e
+    Parser fn
+
 let map f p =
     let fn input =
         let result = run p input

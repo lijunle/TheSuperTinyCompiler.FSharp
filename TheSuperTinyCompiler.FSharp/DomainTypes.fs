@@ -12,3 +12,8 @@ type Result<'a> =
 
 type Parser<'a> =
     | Parser of (Input -> Result<'a * Input>)
+
+type Node =
+    | Program of Node list
+    | CallExpression of string * Node list
+    | NumberLiteral of int

@@ -2,11 +2,6 @@
 
 open Tokenizer
 
-type Node =
-    | Program of body: Node list
-    | CallExpression of name: string * param: Node list
-    | NumberLiteral of value: int
-
 let parser tokens =
     let rec parser' tokens =
         match tokens with
