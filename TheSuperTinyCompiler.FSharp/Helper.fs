@@ -20,6 +20,12 @@ module Input =
     let first input = input.Value.[input.Index]
     let empty input = input.Index = input.Value.Length
 
+module Result =
+    let bind f r =
+        match r with
+        | Failure e -> Failure e
+        | Success v -> f v
+
 module Parser =
     let run parser input =
         let (Parser fn) = parser
@@ -74,6 +80,15 @@ module Parser =
 
         List.foldBack folder list initialValue
 
+    let between p1 p2 p3 =
+        let (>>=) result f = Result.bind f result
+        let fn input1 =
+            run p1 input1 >>= (fun (_, input2) ->
+            run p2 input2 >>= (fun (v, input3) ->
+            run p3 input3 >>= (fun (_, input4) ->
+            Success (v, input4))))
+        Parser fn
+
 let parseChar c =
     let fn input =
         if Input.empty input then
@@ -127,7 +142,7 @@ let parseInteger =
 
 let test p s =
     let input = Input.init s
-    let parser = parseInteger
+    let parser = Parser.between (parseChar '(') parseInteger (parseChar ')')
     let result = Parser.run parser input
     match result with
     | Failure e -> printfn "%s" e
