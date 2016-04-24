@@ -38,3 +38,14 @@ Thumbs.db
 
 #dotCover
 *.dotCover
+
+# Node.js & NPM
+node_modules
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Fabel output
+dist

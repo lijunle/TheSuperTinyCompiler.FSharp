@@ -1,0 +1,19 @@
+{
+  "name": "the-super-tiny-compiler",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "build": "fable TheSuperTinyCompiler.FSharp/TheSuperTinyCompiler.FSharp.fsproj -o TheSuperTinyCompiler.FSharp/dist -s"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lijunle/TheSuperTinyCompiler.FSharp.git"
+  },
+  "author": "Junle Li <lijunle@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "fable-compiler": "^0.2.2"
+  }
+}
