@@ -1,0 +1,9 @@
+{
+  "projFile": "TheSuperTinyCompiler.FSharp/TheSuperTinyCompiler.FSharp.fsproj",
+  "outDir": "TheSuperTinyCompiler.FSharp/dist",
+  "sourceMaps": false,
+  "scripts": {
+    "prebuild": "npm install",
+    "postbuild": "node node_modules/webpack/bin/webpack"
+  }
+}
