@@ -3,7 +3,7 @@
 let (.>>.) = Parser.(.>>.)
 let (|>>) = Parser.(|>>)
 
-let char c =
+let character c =
     let equal first =
         c = first
     let message first =
@@ -12,13 +12,15 @@ let char c =
 
 let anyOf charList =
     charList
-    |> List.map char
+    |> List.map character
     |> List.reduce Parser.orElse
 
 let space =
+    let isWhiteSpace c =
+        c = ' ' || c = '\t' || c = '\r' || c = '\n'
     let message first =
         sprintf "Expect space, actual %c" first
-    Parser.satisfy System.Char.IsWhiteSpace message
+    Parser.satisfy isWhiteSpace message
 
 let spaces =
     Parser.many space
@@ -29,7 +31,7 @@ let charListToString chars =
 let string (s : string) =
     s
     |> List.ofSeq
-    |> List.map char
+    |> List.map character
     |> Parser.sequenceList
     |>> charListToString
 

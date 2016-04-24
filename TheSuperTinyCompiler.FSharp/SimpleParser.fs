@@ -10,21 +10,21 @@ let integer =
     StandardParser.integer
     |>> Node.NumberLiteral
 
-let leftParen = StandardParser.char '('
+let leftParen = StandardParser.character '('
 
-let rightParen = StandardParser.char ')'
+let rightParen = StandardParser.character ')'
 
 let name =
     Parser.many (StandardParser.anyOf ['a'..'z'])
     |>> StandardParser.charListToString
 
-let value' =
+let valueWrapper =
     let p = Parser.fail "Not implemented"
     let ref = ref p
     let fn input = Parser.run !ref input // forward reference
     (Parser fn, ref)
 
-let (value, valueRef) = value'
+let (value, valueRef) = valueWrapper
 
 let spaces = StandardParser.spaces
 
