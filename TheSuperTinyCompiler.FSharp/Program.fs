@@ -9,9 +9,9 @@ let main argv =
     let input = "(add 8 (subtract 4 2))"
     printfn "%s" input
 
-    Result.result {
-        let! code = compile input
-        return printfn "%s" code
-    } |> ignore
+    let code = compile input
+    match code with
+    | Success v -> printfn "%s" v
+    | Failure e -> printfn "[FAIL] %s" e
 
     0 // return an integer exit code
