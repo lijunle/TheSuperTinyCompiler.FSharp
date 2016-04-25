@@ -26,7 +26,7 @@ let spaces =
     Parser.many space
 
 let charListToString chars =
-    System.String(List.toArray chars)
+    chars |> List.fold (fun s c -> s + c.ToString()) ""
 
 let string (s : string) =
     s
@@ -39,7 +39,7 @@ let integer =
     let firstDigit = anyOf ['1'; '2'; '3'; '4'; '5'; '6'; '7'; '8'; '9']
     let digits = anyOf ['0'; '1'; '2'; '3'; '4'; '5'; '6'; '7'; '8'; '9']
     let digitsToInteger digits =
-        digits |> List.toArray |> System.String |> int
+        digits |> charListToString |> int
 
     // Only support positive integer now.
     firstDigit .>>. Parser.many digits
