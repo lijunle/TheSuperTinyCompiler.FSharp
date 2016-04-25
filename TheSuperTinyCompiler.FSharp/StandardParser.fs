@@ -3,7 +3,7 @@
 let (.>>.) = Parser.(.>>.)
 let (|>>) = Parser.(|>>)
 
-let char c =
+let character c =
     let equal first =
         c = first
     let message first =
@@ -12,32 +12,34 @@ let char c =
 
 let anyOf charList =
     charList
-    |> List.map char
+    |> List.map character
     |> List.reduce Parser.orElse
 
 let space =
+    let isWhiteSpace c =
+        c = ' ' || c = '\t' || c = '\r' || c = '\n'
     let message first =
         sprintf "Expect space, actual %c" first
-    Parser.satisfy System.Char.IsWhiteSpace message
+    Parser.satisfy isWhiteSpace message
 
 let spaces =
     Parser.many space
 
 let charListToString chars =
-    System.String(List.toArray chars)
+    chars |> List.fold (fun s c -> s + c.ToString()) ""
 
 let string (s : string) =
     s
     |> List.ofSeq
-    |> List.map char
+    |> List.map character
     |> Parser.sequenceList
     |>> charListToString
 
 let integer =
-    let firstDigit = anyOf ['1'..'9']
-    let digits = anyOf ['0'..'9']
+    let firstDigit = anyOf ['1'; '2'; '3'; '4'; '5'; '6'; '7'; '8'; '9']
+    let digits = anyOf ['0'; '1'; '2'; '3'; '4'; '5'; '6'; '7'; '8'; '9']
     let digitsToInteger digits =
-        digits |> List.toArray |> System.String |> int
+        digits |> charListToString |> int
 
     // Only support positive integer now.
     firstDigit .>>. Parser.many digits
