@@ -17,10 +17,10 @@
   },
   "dependencies": {
     "core-js": "^2.3.0",
-    "fable-core": "0.0.10"
+    "fable-core": "0.0.12"
   },
   "devDependencies": {
-    "fable-compiler": "^0.2.2",
+    "fable-compiler": "0.2.3",
     "source-map-loader": "^0.1.5",
     "webpack": "^1.13.0"
   }
